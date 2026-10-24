@@ -2,8 +2,11 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#153548">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
 <title>Биржевые приключения — игра</title>
 <style>
 :root{--ink:#251908;--cream:#fff0bd;--gold:#ffc746;--edge:#79410e;--pine:#114d36;--up:#40e986;--down:#ff7772;--night:#162d42}
@@ -714,6 +717,71 @@ body:has(#homeScreen.active) .toast.show{background:rgba(20,55,48,.68);}
   #editorScreen.active .editor-total{font-size:10px;}
 }
 
+
+/* iPhone/Safari viewport repair v18.
+   Use the visible viewport height (Safari's floating bars/rotation change it).
+   The stage is intentionally scaled by BOTH height and width. */
+:root{--game-height:100dvh;--game-width:100vw}
+html,body{width:100%;max-width:100%;overscroll-behavior:none}
+#app{width:100%;max-width:100%;box-sizing:border-box}
+#homeScreen .cards-panel,#homeScreen .stocks-rail,#homeScreen .main-board,
+#homeScreen .bag-shell,#homeScreen .home-bottom{min-width:0;min-height:0}
+#homeScreen .stock-card{-webkit-touch-callout:none}
+button{touch-action:manipulation}
+.topbar{right:max(5px,env(safe-area-inset-right));top:max(4px,env(safe-area-inset-top))}
+.topbar .gear-label{white-space:nowrap;right:0;left:auto;max-width:120px;text-align:right;font-size:clamp(9px,1.3vw,12px)}
+/* The current mobile viewport may be smaller than the CSS dynamic viewport
+   while Safari browser controls are onscreen. */
+@media (max-width:1100px){
+ #app:has(.screen.active){height:var(--game-height);min-height:var(--game-height);max-height:var(--game-height);overflow:hidden}
+ #homeScreen.active{height:100%;min-height:0;max-height:100%;overflow:hidden}
+}
+@media (orientation:landscape) and (max-height:650px){
+ html,body{height:100%;overflow:hidden!important}
+ #app:has(.screen.active){height:var(--game-height)!important;min-height:0!important;max-height:var(--game-height)!important;overflow:hidden!important;
+   padding:max(3px,env(safe-area-inset-top)) max(7px,env(safe-area-inset-right)) max(4px,env(safe-area-inset-bottom)) max(7px,env(safe-area-inset-left))!important}
+ #homeScreen.active{display:grid!important;grid-template-rows:minmax(0,24%) minmax(0,57%) minmax(0,19%)!important;height:100%;max-height:100%;overflow:hidden}
+ #homeScreen .home-header{min-width:0;min-height:0;padding-right:clamp(38px,6vw,60px);overflow:visible;gap:5px}
+ #homeScreen .logo-wrap{width:min(30vw,240px);height:100%;min-height:0;margin:0}
+ #homeScreen .logo-wrap img{width:100%;height:100%;object-fit:contain;object-position:left top}
+ #homeScreen .funds-wrap{width:min(23vw,185px);max-width:100%;align-self:flex-start;margin:0}
+ #homeScreen .funds-amount{font-size:clamp(9px,1.5vw,14px)}
+ #homeScreen .main-board{height:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,23%);gap:clamp(4px,.9vw,10px);align-items:center;min-height:0;overflow:hidden}
+ #homeScreen .cards-panel{height:100%;width:100%;min-width:0;min-height:0;overflow:hidden}
+ #homeScreen .stocks-rail{height:100%;width:100%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:minmax(0,1fr);
+   justify-items:center;align-items:center;gap:clamp(2px,.55vw,8px);padding:0;overflow:hidden;min-height:0;min-width:0;touch-action:auto}
+ #homeScreen .stock-card{display:block;box-sizing:border-box;min-width:0;min-height:0;height:auto;aspect-ratio:948/1659;
+   width:min(100%,calc(var(--game-height) * .30));max-width:100%;max-height:100%;align-self:center;justify-self:center;margin:0}
+ #homeScreen .stock-card img{display:block;width:100%;height:auto;object-fit:contain}
+ #homeScreen .stock-card[data-index="1"] img{transform:scale(1.015)}
+ #homeScreen .stock-price{font-size:clamp(7px,1.27vw,12px)}
+ #homeScreen .bag-shell{width:min(100%,calc(var(--game-height) * .58));max-width:100%;height:auto;max-height:100%;overflow:visible;justify-self:center}
+ #homeScreen .bag-drop{height:auto;aspect-ratio:1369/1149;width:100%;max-height:100%}
+ #homeScreen .bag-holdings{font-size:clamp(6px,.96vw,10px);line-height:1.02}
+ #homeScreen .holding-line{padding:1px 0;gap:3px}
+ #homeScreen .bag-totals{font-size:clamp(9px,1.4vw,13px)}
+ #homeScreen .home-bottom{height:100%;width:100%;display:flex;flex-direction:row;align-items:center;justify-content:flex-end;
+   gap:clamp(6px,1.7vw,17px);margin:0;padding:0 max(5px,4vw) 0 0;min-height:0}
+ #homeScreen .hint-img{display:block;width:min(24vw,180px);height:auto;max-height:90%;max-width:24vw;object-fit:contain;margin:0}
+ #homeScreen .start-btn{display:block;flex:0 0 auto;width:min(25vw,calc(var(--game-height) * .43));min-width:0!important;max-width:25vw!important;
+    height:auto!important;max-height:92%!important;aspect-ratio:2.4/1;margin:0}
+ #homeScreen .start-btn img{width:100%;height:100%;object-fit:contain}
+ #homeScreen .start-btn:hover{transform:none}
+ .topbar{top:max(3px,env(safe-area-inset-top));right:max(6px,env(safe-area-inset-right))}
+ .topbar .gear-label{right:0;left:auto;max-width:86px;font-size:9px;white-space:nowrap;text-align:right}
+ .icon-gear{width:clamp(26px,4.2dvh,35px);height:clamp(26px,4.2dvh,35px)}
+ /* During live trading the stock cards and chart must fit Safari's reduced height. */
+ #marketScreen.active,#tradeScreen.active,#finalScreen.active,#editorScreen.active{height:100%;max-height:100%;overflow:hidden}
+ #marketScreen.active .live-shell,#tradeScreen.active .trade-shell{height:100%;max-height:100%;min-height:0}
+}
+@media (orientation:portrait) and (max-width:750px){
+ #app:has(.screen.active){height:var(--game-height)!important;min-height:0!important;max-height:var(--game-height)!important;
+  padding:max(4px,env(safe-area-inset-top)) 6px max(4px,env(safe-area-inset-bottom))!important;overflow:hidden}
+ #homeScreen.active{height:100%;max-height:100%;min-height:0}
+ #homeScreen .stocks-rail{grid-template-rows:minmax(0,1fr);min-height:0;overflow:hidden}
+ #homeScreen .stock-card{width:min(100%,calc(var(--game-height) * .155));max-height:100%;height:auto;min-height:0}
+ .topbar{right:max(6px,env(safe-area-inset-right));top:max(5px,env(safe-area-inset-top))}
+}
 </style>
 </head>
 <body>
@@ -969,12 +1037,77 @@ body:has(#homeScreen.active) .toast.show{background:rgba(20,55,48,.68);}
  function drawCharts(){if(screen==='market')drawLiveCharts();else if(screen==='trade')drawTradeGraph();}
  function refreshFullscreenGear(){const enabled=!!document.fullscreenElement;const btn=$('fullscreenBtn');btn.classList.toggle('fullscreen-on',enabled);btn.setAttribute('aria-pressed',String(enabled));btn.setAttribute('aria-label',enabled?'Выйти из полноэкранного режима':'Включить полноэкранный режим');$('fullscreenLabel').textContent=enabled?'свернуть':'на весь экран';}
  document.addEventListener('fullscreenchange',refreshFullscreenGear);
- $('fullscreenBtn').addEventListener('click',async()=>{try{if(document.fullscreenElement){await document.exitFullscreen();toast('Обычный режим')}else if(document.documentElement.requestFullscreen){await document.documentElement.requestFullscreen();toast('Полный экран')}else toast('Браузер не поддерживает полный экран')}catch(e){toast('Браузер запретил полный экран')}finally{refreshFullscreenGear()}});
+ // Safari on iPhone has no element fullscreen API. Keep a local immersive
+ // state so the gear acts like a toggle while the game always fits the viewport.
+ let safariImmersive=false;
+ function updateGameFullscreen(){
+   const enabled=!!document.fullscreenElement || safariImmersive;
+   const b=$('fullscreenBtn'); b.classList.toggle('fullscreen-on',enabled);
+   b.setAttribute('aria-pressed',String(enabled));
+   b.setAttribute('aria-label',enabled?'Свернуть':'На весь экран');
+   $('fullscreenLabel').textContent=enabled?'свернуть':'на весь экран';
+   document.body.classList.toggle('safari-immersive',safariImmersive);
+ }
+ document.addEventListener('fullscreenchange',updateGameFullscreen);
+ $('fullscreenBtn').addEventListener('click',async()=>{
+   try{
+     if(document.fullscreenElement){await document.exitFullscreen();safariImmersive=false;}
+     else if(safariImmersive){safariImmersive=false;}
+     else if(document.documentElement.requestFullscreen){
+       try{await document.documentElement.requestFullscreen();}
+       catch(e){safariImmersive=true;toast('Игра подогнана под экран. Для полного экрана iPhone добавь сайт на экран «Домой».');}
+     }else{safariImmersive=true;toast('Экран подогнан. Для режима без панелей Safari добавь сайт на экран «Домой».');}
+   }catch(e){safariImmersive=true;}
+   finally{updateGameFullscreen();window.scrollTo(0,0);}
+ });
  $('startBtn').addEventListener('pointerdown',()=>setStartPressed(true));$('startBtn').addEventListener('pointerup',()=>{if(screen==='home'&&shares()===0)setTimeout(()=>setStartPressed(false),120)});$('startBtn').addEventListener('pointerleave',()=>{if(screen==='home'&&shares()===0)setStartPressed(false)});$('startBtn').addEventListener('pointercancel',()=>{if(screen==='home'&&shares()===0)setStartPressed(false)});$('startBtn').addEventListener('click',startMarket);$('liquidateBtn').addEventListener('click',liquidateAndFinish);$('restartLiveBtn').addEventListener('click',resetGame);$('closeTrade').addEventListener('click',closeTrade);$('tradeBuy').addEventListener('click',()=>tradeOne(1));$('tradeSell').addEventListener('click',()=>tradeOne(-1));
  
  $('buyMinus').addEventListener('click',()=>setBuyQty(Math.max(1,Number(quantity)||1)-1));$('buyPlus').addEventListener('click',()=>setBuyQty(Math.min(affordable(activeStock),(Number(quantity)||0)+1)));$('buyAll').addEventListener('click',()=>setBuyQty(affordable(activeStock)));$('buyQty').addEventListener('input',e=>setBuyQty(e.target.value,true));$('buyConfirm').addEventListener('click',confirmPurchase);$('buyCancel').addEventListener('click',closePurchase);$('purchaseOverlay').addEventListener('click',e=>{if(e.target===$('purchaseOverlay'))closePurchase()});
  $('editPortfolioBtn').addEventListener('click',e=>{e.stopPropagation();openPortfolioEditor()});$('bagHoldings').addEventListener('click',openPortfolioEditor);$('resetPortfolio').addEventListener('click',resetPortfolio);$('nextCycle').addEventListener('click',startMarket);$('cashOut').addEventListener('click',leavePortfolioEditor);$('playAgain').addEventListener('click',resetGame);$('mainMenu').addEventListener('click',resetGame);document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(activeStock>=0)closePurchase();else if(screen==='trade')closeTrade()}});window.addEventListener('resize',()=>{if(screen==='market'||screen==='trade')requestAnimationFrame(drawCharts);else if(screen==='home')requestAnimationFrame(fitBagRows);});
  createHome();resetGame();
+})();
+</script>
+
+<script>
+(function(){
+  var root=document.documentElement;
+  var viewport=document.querySelector('meta[name="viewport"]');
+  var original=viewport?viewport.getAttribute('content'):'';
+  var frame=0;
+  function resizeGame(){
+    if(frame)cancelAnimationFrame(frame);
+    frame=requestAnimationFrame(function(){
+      frame=0;
+      var vv=window.visualViewport;
+      // visual viewport tracks Safari's translucent/expanding bars accurately.
+      var visibleHeight=vv && vv.height?vv.height:window.innerHeight;
+      var logicalHeight=window.innerHeight||visibleHeight;
+      var h=Math.max(180,Math.min(visibleHeight,logicalHeight));
+      root.style.setProperty('--game-height',Math.round(h)+'px');
+      root.style.setProperty('--game-width',Math.round(window.innerWidth)+'px');
+      if(document.activeElement && document.activeElement.tagName!=='INPUT'){
+        window.scrollTo(0,0);
+      }
+    });
+  }
+  function rotateFix(){
+    if(viewport){
+      // iOS occasionally keeps the previous landscape zoom factor.
+      viewport.setAttribute('content','width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover');
+    }
+    resizeGame();
+    setTimeout(resizeGame,120);
+    setTimeout(resizeGame,450);
+    setTimeout(resizeGame,850);
+  }
+  window.addEventListener('resize',resizeGame,{passive:true});
+  window.addEventListener('orientationchange',rotateFix,{passive:true});
+  window.addEventListener('pageshow',rotateFix,{passive:true});
+  if(window.visualViewport){
+    window.visualViewport.addEventListener('resize',resizeGame,{passive:true});
+    window.visualViewport.addEventListener('scroll',resizeGame,{passive:true});
+  }
+  resizeGame();
 })();
 </script>
 </body></html>
