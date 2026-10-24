@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
-<title>Биржевые приключения — игра</title>
+<title>Биржевые приключения — FIFO v20</title>
 <style>
 :root{--ink:#251908;--cream:#fff0bd;--gold:#ffc746;--edge:#79410e;--pine:#114d36;--up:#40e986;--down:#ff7772;--night:#162d42}
 *{box-sizing:border-box}html{min-height:100%;scroll-behavior:smooth}body{margin:0;color:#fff5d5;font-family:Trebuchet MS,Arial,sans-serif;background:#102d3d;overflow-x:hidden;-webkit-tap-highlight-color:transparent}button,input{font:inherit}button{cursor:pointer}button:focus-visible,.stock-card:focus-visible{outline:3px solid #a3f5ff;outline-offset:3px}button:disabled{opacity:.42;cursor:not-allowed;filter:grayscale(.5)}
@@ -782,6 +782,196 @@ button{touch-action:manipulation}
  #homeScreen .stock-card{width:min(100%,calc(var(--game-height) * .155));max-height:100%;height:auto;min-height:0}
  .topbar{right:max(6px,env(safe-area-inset-right));top:max(5px,env(safe-area-inset-top))}
 }
+
+/* v19: viewport-anchored portfolio editor.  Never size an inner screen using
+   100dvh independently from #app's visualViewport-based --game-height. */
+@media (max-width: 1100px) {
+  #editorScreen.active {
+    display:block;
+    box-sizing:border-box;
+    height:100% !important;
+    min-height:0 !important;
+    max-height:100% !important;
+    overflow:hidden !important;
+  }
+  #editorScreen.active .editor-screen {
+    display:grid;
+    box-sizing:border-box;
+    width:100%;
+    height:100% !important;
+    min-height:0 !important;
+    max-height:100% !important;
+    grid-template-rows:auto auto minmax(0,1fr) auto;
+    gap:clamp(3px,.85vh,7px);
+    margin:0;
+    overflow:hidden !important;
+  }
+  #editorScreen.active .editor-heading,
+  #editorScreen.active .editor-summary,
+  #editorScreen.active .editor-table,
+  #editorScreen.active .editor-rows,
+  #editorScreen.active .editor-actions {min-height:0;min-width:0;}
+  #editorScreen.active .editor-table {
+    display:flex;
+    flex-direction:column;
+    min-height:0 !important;
+    height:100%;
+    margin:0;
+    overflow:hidden !important;
+  }
+  #editorScreen.active .editor-rows {
+    flex:1 1 auto;
+    min-height:0;
+    height:100%;
+    overflow:hidden;
+    align-content:stretch;
+  }
+  #editorScreen.active .editor-actions {
+    position:relative;
+    z-index:3;
+    flex:0 0 auto;
+    min-height:0;
+    margin:0;
+    padding:0 0 1px;
+  }
+  #editorScreen.active .editor-actions .btn {
+    min-width:0;
+    white-space:normal;
+    overflow-wrap:break-word;
+    line-height:1.1;
+  }
+}
+/* Portrait: five self-contained rows + always-visible bottom action bar */
+@media (orientation:portrait) and (max-width:750px) {
+  #editorScreen.active .editor-screen{gap:clamp(3px,.7vh,6px)}
+  #editorScreen.active .editor-heading{margin:0;}
+  #editorScreen.active .editor-description{margin:4px auto 0;line-height:1.1;}
+  #editorScreen.active .editor-table{padding:clamp(5px,1.5vw,9px);}
+  #editorScreen.active .panel-title{margin:0 0 3px;line-height:1.03;}
+  #editorScreen.active .editor-rows {
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+    grid-template-rows:repeat(5,minmax(0,1fr));
+    gap:clamp(2px,.65vh,5px);
+    margin:0;
+  }
+  #editorScreen.active .editor-item,
+  #editorScreen.active .editor-item:last-child{
+    min-height:0;
+    overflow:hidden;
+    padding-top:2px;padding-bottom:2px;
+  }
+  #editorScreen.active .editor-actions{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:4px;
+  }
+  #editorScreen.active .editor-actions .btn{
+    min-height:34px;
+    padding:5px 2px;
+    font-size:clamp(9px,2.65vw,12px);
+  }
+}
+/* Extra-short portrait screens, including Android fullscreen viewports. */
+@media (orientation:portrait) and (max-width:750px) and (max-height:680px) {
+  #editorScreen.active .screen-title{font-size:clamp(18px,5vw,24px);}
+  #editorScreen.active .editor-description{font-size:clamp(8px,2.4vw,10px);margin-top:2px;}
+  #editorScreen.active .editor-summary .stat-chip{padding:3px 6px;}
+  #editorScreen.active .editor-summary .stat-chip strong{font-size:12px;}
+  #editorScreen.active .panel-title{font-size:15px;}
+  #editorScreen.active .editor-table{padding:5px;}
+  #editorScreen.active .editor-item,
+  #editorScreen.active .editor-item:last-child{padding-top:1px;padding-bottom:1px;}
+  #editorScreen.active .qty-btn{height:26px;width:26px;flex-basis:26px;font-size:16px;}
+  #editorScreen.active .qty-controls{width:84px;}
+  #editorScreen.active .editor-item{grid-template-columns:22px minmax(0,1fr) 84px;}
+  #editorScreen.active .editor-actions .btn{min-height:32px;padding:4px 2px;font-size:10px;}
+}
+/* Landscape: one compact row of five editing tiles and visible action bar. */
+@media (orientation:landscape) and (max-width:1100px) and (max-height:650px) {
+  #editorScreen.active .editor-screen{gap:clamp(3px,.9vh,6px);}
+  #editorScreen.active .editor-heading{margin:0;}
+  #editorScreen.active .screen-title{font-size:clamp(15px,2.5vw,23px);line-height:1;}
+  #editorScreen.active .editor-description{margin:2px auto 0;font-size:clamp(8px,1.1vw,10px);line-height:1;}
+  #editorScreen.active .editor-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin:0;}
+  #editorScreen.active .editor-summary .stat-chip{min-width:0;padding:3px 7px;font-size:9px;}
+  #editorScreen.active .editor-summary .stat-chip strong{font-size:clamp(11px,1.7vw,15px);line-height:1;}
+  #editorScreen.active .editor-table{padding:clamp(5px,.8vw,9px);}
+  #editorScreen.active .panel-title{font-size:clamp(13px,1.9vw,17px);line-height:1;margin:0 0 3px;}
+  #editorScreen.active .editor-rows{
+    display:grid;
+    grid-template-columns:repeat(5,minmax(0,1fr));
+    grid-template-rows:minmax(0,1fr);
+    gap:clamp(3px,.65vw,7px);
+    margin:0;
+    overflow:hidden;
+  }
+  #editorScreen.active .editor-item,
+  #editorScreen.active .editor-item:last-child{
+    display:flex;
+    flex-direction:column;
+    grid-column:auto;
+    justify-content:space-between;
+    align-items:center;
+    gap:1px;
+    text-align:center;
+    padding:clamp(2px,.5vw,6px);
+    overflow:hidden;
+    min-height:0;
+  }
+  #editorScreen.active .editor-symbol{font-size:clamp(14px,2.5vw,22px);height:auto;line-height:1;flex:0 0 auto;}
+  #editorScreen.active .editor-name{min-height:0;font-size:clamp(8px,1.28vw,11px);line-height:1.05;flex:0 0 auto;}
+  #editorScreen.active .editor-price{font-size:clamp(8px,1.14vw,10px);margin:0;line-height:1.05;flex:0 0 auto;}
+  #editorScreen.active .editor-total{font-size:clamp(10px,1.3vw,12px);margin:0;line-height:1;flex:0 0 auto;}
+  #editorScreen.active .qty-controls{display:flex;justify-content:center;gap:4px;flex:0 0 auto;}
+  #editorScreen.active .qty-btn{width:clamp(22px,3vw,30px);height:clamp(22px,3vw,30px);font-size:clamp(14px,2vw,19px);}
+  #editorScreen.active .qty-controls .qty-num{min-width:14px;font-size:clamp(10px,1.5vw,13px);}
+  #editorScreen.active .editor-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;}
+  #editorScreen.active .editor-actions .btn{min-height:30px;padding:5px 3px;font-size:clamp(9px,1.3vw,12px);}
+}
+
+
+/* v19: keep temporary purchase notices away from the editor action bar. */
+@media (max-width:1100px){
+  body:has(#editorScreen.active) .toast{
+    bottom:auto;
+    top:clamp(100px,19vh,160px);
+    transform:translate(-50%,-12px);
+  }
+  body:has(#editorScreen.active) .toast.show{transform:translate(-50%,0);}
+}
+@media (orientation:portrait) and (max-width:750px){
+  #app:has(#editorScreen.active){
+    padding-bottom:max(12px,env(safe-area-inset-bottom)) !important;
+  }
+}
+
+
+/* v20: FIFO analytics - distinct position and overall portfolio P/L */
+#tradeScreen .trade-summary{grid-template-columns:repeat(6,minmax(0,1fr));gap:clamp(3px,.65vw,8px)}
+#tradeScreen .trade-stat{min-width:0;overflow:hidden;padding:clamp(4px,.7vw,9px);gap:2px}
+#tradeScreen .trade-stat span{font-size:clamp(8px,.85vw,11px);line-height:1.1;white-space:normal}
+#tradeScreen .trade-stat b{font-size:clamp(11px,1.5vw,20px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#tradeScreen .trade-chart-panel{grid-template-rows:auto auto minmax(0,1fr);row-gap:4px}
+#tradeScreen .trade-cost-legend{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;color:#ffe5ab;font-size:clamp(9px,1vw,12px);line-height:1.05;min-width:0}
+#tradeScreen .trade-cost-caption,#tradeScreen .trade-realized-caption{white-space:nowrap;max-width:100%;min-width:0}
+#tradeScreen .trade-cost-swatch{display:inline-block;width:22px;border-top:2px dashed #ffd16c;vertical-align:middle;margin:0 6px 3px 0}
+#tradeScreen .trade-cost-legend b{color:#ffdd88}
+#tradeScreen .trade-cost-legend .loss{color:#ff8b81}
+@media (orientation:portrait) and (max-width:750px){
+  #tradeScreen .trade-summary{grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+  #tradeScreen .trade-stat{padding:clamp(3px,.9dvh,8px) 7px}
+  #tradeScreen .trade-stat span{font-size:clamp(8px,2.5vw,10px)}
+  #tradeScreen .trade-stat b{font-size:clamp(11px,3.2vw,16px)}
+  #tradeScreen .trade-cost-legend{gap:3px;font-size:clamp(8px,2.5vw,10px)}
+}
+@media (orientation:landscape) and (max-height:540px){
+  #tradeScreen .trade-stat{padding:3px 5px}
+  #tradeScreen .trade-stat span{font-size:clamp(7px,.94vw,10px)}
+  #tradeScreen .trade-stat b{font-size:clamp(11px,1.44vw,16px)}
+  #tradeScreen .trade-cost-legend{font-size:clamp(8px,.95vw,10px)}
+}
+
 </style>
 </head>
 <body>
@@ -808,8 +998,8 @@ button{touch-action:manipulation}
  </div></section>
  <section class="screen" id="tradeScreen"><div class="trade-shell">
   <div class="trade-heading"><div class="trade-head-name"><div class="trade-small">ТОРГОВЛЯ АКЦИЕЙ</div><strong id="tradeName">Акция</strong></div><button id="closeTrade" class="close-trade" aria-label="Вернуться к портфелю">✕</button></div>
-  <div class="trade-summary"><div class="trade-stat"><span>ТЕКУЩАЯ ЦЕНА</span><b id="tradePrice">0 ₽</b></div><div class="trade-stat"><span>У ВАС АКЦИЙ</span><b id="tradeQty">0</b></div><div class="trade-stat"><span>СВОБОДНЫЕ СРЕДСТВА</span><b id="tradeCash">0 ₽</b></div><div class="trade-stat"><span>ПРИБЫЛЬ / УБЫТОК</span><b id="tradePnL">0 ₽</b></div></div>
-  <div class="trade-chart-panel"><div class="trade-chart-label"><span id="tradeChartTitle">График котировок</span><span id="tradeChange">0%</span></div><canvas id="tradeCanvas" aria-label="График текущей акции"></canvas></div>
+  <div class="trade-summary"><div class="trade-stat"><span>ТЕКУЩАЯ ЦЕНА</span><b id="tradePrice">0 ₽</b></div><div class="trade-stat"><span>У ВАС АКЦИЙ</span><b id="tradeQty">0</b></div><div class="trade-stat"><span>СВОБОДНЫЕ ДЕНЬГИ</span><b id="tradeCash">0 ₽</b></div><div class="trade-stat"><span>ПОЗИЦИЯ · P/L (FIFO)</span><b id="tradePnL">0 ₽</b></div><div class="trade-stat"><span>ВЕСЬ ПОРТФЕЛЬ</span><b id="tradeEquity">0 ₽</b></div><div class="trade-stat"><span>ОБЩИЙ P/L</span><b id="tradeOverallPnL">0 ₽</b></div></div>
+  <div class="trade-chart-panel"><div class="trade-chart-label"><span id="tradeChartTitle">График котировок</span><span id="tradeChange">0%</span></div><div class="trade-cost-legend"><span class="trade-cost-caption"><i class="trade-cost-swatch"></i>Ср. цена оставшихся акций (FIFO): <b id="tradeAvgPrice">—</b></span><span class="trade-realized-caption">Зафиксировано по акции: <b id="tradeRealized">0 ₽</b></span></div><canvas id="tradeCanvas" aria-label="График текущей акции и средней цены FIFO"></canvas></div>
   <div class="trade-controls"><button class="live-btn buy-btn" id="tradeBuy">+ КУПИТЬ 1 АКЦИЮ</button><button class="live-btn sell-btn" id="tradeSell">− ПРОДАТЬ 1 АКЦИЮ</button></div>
  </div></section>
  <section class="screen" id="editorScreen"><div class="editor-screen"><div class="editor-heading"><div class="screen-title">★ Цикл завершён!</div><p class="editor-description">Управляй своим портфелем: покупай и продавай акции по новым рыночным ценам.</p></div><div class="editor-summary"><div class="stat-chip">Свободные деньги<strong id="editCash"></strong></div><div class="stat-chip">Вложено<strong id="editInvested"></strong></div><div class="stat-chip">Стоимость портфеля<strong id="editEquity"></strong></div><div class="stat-chip">Звёзды<strong id="editStars"></strong></div></div><div class="panel editor-table"><h2 class="panel-title">Твои инвестиции</h2><div class="editor-rows" id="editorRows"></div></div><div class="editor-actions"><button class="btn red" id="resetPortfolio">↩ Сбросить портфель</button><button class="btn green" id="nextCycle">🚀 Следующий цикл</button><button class="btn" id="cashOut">🏁 Выйти в кэш</button></div></div></section>
@@ -842,7 +1032,7 @@ button{touch-action:manipulation}
  let state,marketInterval=null,toastTimeout=null,drag=null,activeStock=-1,quantity=1,selectedStock=0,chartEquity=[],chartQuotes=[],tick=0;
  let screen='home',startPressed=false,editorFromHome=false,swanPlan=null,swanDetails=null,swanTimeout=null;
  let sessionStart=0, elapsedMs=0, lastClock=0, selectedTrade=-1, marketStarted=false;
- let avgCosts=[0,0,0,0,0],realizedPnL=[0,0,0,0,0],watchStocks=new Set(),eventWindow=0,sessionEventCount=0;
+ let avgCosts=[0,0,0,0,0],realizedPnL=[0,0,0,0,0],fifoLots=[[],[],[],[],[]],watchStocks=new Set(),eventWindow=0,sessionEventCount=0;
  const qtyValue=i=>state.qty[i], invested=()=>sum(state.qty.map((q,i)=>q*state.prices[i])),equity=()=>state.cash+invested(),shares=()=>sum(state.qty);
  function fresh(){return {cash:10000,qty:[0,0,0,0,0],prices:COMPANIES.map(c=>c.price),stars:0,cycleNum:0}}
  function showScreen(name){screen=name;for(const s of document.querySelectorAll('.screen'))s.classList.toggle('active',s.id===(name+'Screen'));if(name!=='home')setStartPressed(false);window.scrollTo(0,0);if(name==='market')requestAnimationFrame(drawLiveCharts);if(name==='trade')requestAnimationFrame(drawTradeGraph);}
@@ -901,16 +1091,42 @@ button{touch-action:manipulation}
    $('cashOut').textContent=editorFromHome?'↩ К акциям':'↩ К акциям';
  }
  function leavePortfolioEditor(){editorFromHome=false;refreshHome();showScreen('home');}
- function resetGame(){clearInterval(marketInterval);marketInterval=null;clearTimeout(swanTimeout);hideSwan();swanPlan=null;swanDetails=null;editorFromHome=false;marketStarted=false;sessionStart=0;elapsedMs=0;lastClock=0;selectedTrade=-1;eventWindow=0;sessionEventCount=0;watchStocks=new Set();avgCosts=[0,0,0,0,0];realizedPnL=[0,0,0,0,0];state=fresh();chartEquity=[];chartQuotes=[];tick=0;activeStock=-1;closePurchase();setStartPressed(false);refreshHome();showScreen('home')}
+ function resetGame(){clearInterval(marketInterval);marketInterval=null;clearTimeout(swanTimeout);hideSwan();swanPlan=null;swanDetails=null;editorFromHome=false;marketStarted=false;sessionStart=0;elapsedMs=0;lastClock=0;selectedTrade=-1;eventWindow=0;sessionEventCount=0;watchStocks=new Set();avgCosts=[0,0,0,0,0];realizedPnL=[0,0,0,0,0];fifoLots=[[],[],[],[],[]];state=fresh();chartEquity=[];chartQuotes=[];tick=0;activeStock=-1;closePurchase();setStartPressed(false);refreshHome();showScreen('home')}
 
- function transact(i,delta){
-  if(delta>0){const price=state.prices[i];if(state.cash+1e-7<price)return false;
-    const old=state.qty[i];avgCosts[i]=(avgCosts[i]*old+price)/(old+1);state.qty[i]++;state.cash=Math.max(0,state.cash-price);watchStocks.add(i);return true;
-  }
-  if(state.qty[i]<=0)return false;
-  const price=state.prices[i];state.qty[i]--;state.cash+=price;realizedPnL[i]+=price-avgCosts[i];if(!state.qty[i])avgCosts[i]=0;watchStocks.add(i);return true;
+ // FIFO: each purchase creates a lot at its own acquisition price.
+ // Closing stock takes the oldest lots first; remaining average is a
+ // weighted average of only the still-open lots, not of all past buys.
+ function recomputeFifoAverage(i){
+   const lots=fifoLots[i],q=lots.reduce((n,l)=>n+l.qty,0);
+   avgCosts[i]=q?lots.reduce((n,l)=>n+l.qty*l.price,0)/q:0;
  }
- function positionPnL(i){return realizedPnL[i]+state.qty[i]*(state.prices[i]-avgCosts[i]);}
+ function buyFifo(i,quantity,price=state.prices[i]){
+   if(!Number.isInteger(quantity)||quantity<1||state.cash+1e-7<quantity*price)return false;
+   const lots=fifoLots[i];
+   if(lots.length&&Math.abs(lots[lots.length-1].price-price)<1e-9)lots[lots.length-1].qty+=quantity;
+   else lots.push({qty:quantity,price:price});
+   state.qty[i]+=quantity;state.cash=Math.max(0,state.cash-quantity*price);
+   recomputeFifoAverage(i);watchStocks.add(i);return true;
+ }
+ function sellFifo(i,quantity,price=state.prices[i]){
+   if(!Number.isInteger(quantity)||quantity<1||state.qty[i]<quantity)return false;
+   let outstanding=quantity,costBasis=0;
+   while(outstanding>0){
+     const lot=fifoLots[i][0];
+     if(!lot)throw new Error('FIFO: некорректный остаток лотов');
+     const taken=Math.min(outstanding,lot.qty);
+     costBasis+=taken*lot.price;lot.qty-=taken;outstanding-=taken;
+     if(lot.qty<=0)fifoLots[i].shift();
+   }
+   state.qty[i]-=quantity;state.cash+=quantity*price;
+   realizedPnL[i]+=quantity*price-costBasis;
+   recomputeFifoAverage(i);watchStocks.add(i);return true;
+ }
+ function transact(i,delta){return delta>0?buyFifo(i,1):sellFifo(i,1);}
+ // P/L for the currently OPEN position in this specific stock.
+ function openPositionPnL(i){return state.qty[i]*(state.prices[i]-avgCosts[i]);}
+ // Per-stock performance including sales closed earlier this session.
+ function positionPnL(i){return realizedPnL[i]+openPositionPnL(i);}
  function formatSession(ms){const seconds=Math.max(0,Math.floor(ms/1000));const parts=[Math.floor(seconds/3600),Math.floor(seconds/60)%60,seconds%60];return (parts[0]?(parts[0]+':'+String(parts[1]).padStart(2,'0')):String(parts[1]).padStart(2,'0'))+':'+String(parts[2]).padStart(2,'0');}
  function affordable(i){return Math.max(0,Math.floor((state.cash+1e-9)/state.prices[i]));}
  function createHome(){const rail=$('stocksRail');rail.innerHTML='';COMPANIES.forEach((c,i)=>{const btn=document.createElement('button');btn.type='button';btn.className='stock-card';btn.dataset.index=i;btn.setAttribute('aria-label','Купить акции '+c.name);btn.innerHTML=`<img src="${c.art}" draggable="false" alt="ПАО ${c.name}"><div class="stock-percentage" id="cardDelta${i}"></div><div class="stock-price measure" id="cardPrice${i}"></div>`;rail.append(btn);btn.addEventListener('pointerdown',e=>onCardDown(e,i));btn.addEventListener('pointermove',onCardMove);btn.addEventListener('pointerup',onCardUp);btn.addEventListener('pointercancel',cancelDrag);btn.addEventListener('click',e=>{if(Date.now()<suppressClickUntil){e.preventDefault();return}openPurchase(i)});btn.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openPurchase(i)}});});}
@@ -945,7 +1161,7 @@ button{touch-action:manipulation}
  function closePurchase(){if($('purchaseOverlay'))$('purchaseOverlay').classList.remove('active');document.body.style.overflow='';activeStock=-1;}
  function refreshPurchase(updateInput=true){if(activeStock<0)return;const i=activeStock,max=affordable(i),cost=quantity*state.prices[i];if(updateInput)$('buyQty').value=quantity;$('buyTotal').textContent=money2(cost);$('buyRemaining').textContent=money2(state.cash-cost);const error=!(Number.isInteger(quantity)&&quantity>0&&quantity<=max);$('buyError').textContent=error?'Введите целое количество от 1 до '+max:'';$('buyConfirm').disabled=error;}
  function setBuyQty(v,fromInput=false){quantity=Number(v);refreshPurchase(!fromInput)}
- function confirmPurchase(){const i=activeStock;if(i<0)return;if(!Number.isInteger(quantity)||quantity<=0||quantity>affordable(i)){refreshPurchase();return;}const old=state.qty[i],price=state.prices[i];avgCosts[i]=(avgCosts[i]*old+price*quantity)/(old+quantity);state.cash=Math.max(0,state.cash-quantity*price);state.qty[i]+=quantity;watchStocks.add(i);const name=COMPANIES[i].name;closePurchase();refreshHome();toast('В портфеле +'+quantity+' акц. «'+name+'»!')}
+ function confirmPurchase(){const i=activeStock;if(i<0)return;if(!Number.isInteger(quantity)||quantity<=0||quantity>affordable(i)){refreshPurchase();return;}if(!buyFifo(i,quantity))return;const name=COMPANIES[i].name;closePurchase();refreshHome();toast('В портфеле +'+quantity+' акц. «'+name+'»!')}
 
  function scheduleSwanWindow(windowIndex){
   eventWindow=windowIndex;
@@ -988,17 +1204,19 @@ button{touch-action:manipulation}
   COMPANIES.forEach((c,i)=>{let card=$('liveCard'+i);if(!card)return;
     const show=watchStocks.has(i)||state.qty[i]>0;card.hidden=!show;if(!show)return;
     $('miniPrice'+i).textContent=money2(state.prices[i]);$('miniQty'+i).textContent='Вложено: '+money2(state.qty[i]*state.prices[i])+' · '+state.qty[i]+' шт.';
-    const pnl=positionPnL(i);const el=$('miniGain'+i);el.textContent=(pnl>0?'+':'')+money2(pnl);el.className=pnl<0?'loss':'gain';
+    const pnl=openPositionPnL(i);const el=$('miniGain'+i);el.textContent=(pnl>0?'+':'')+money2(pnl);el.className=pnl<0?'loss':'gain';
   });
   if(screen==='trade')updateTradeUI();
  }
- function priceGraph(canvas,data,color='#3fea91',full=false){
+ function priceGraph(canvas,data,color='#3fea91',full=false,averageLevel=null){
   if(!canvas)return;const rect=canvas.getBoundingClientRect();const w=rect.width,h=rect.height;if(w<3||h<3)return;
   const dpr=Math.min(2,window.devicePixelRatio||1);canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);
   const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
   const left=full?40:5,right=full?12:5,top=full?16:6,bottom=full?24:7;
   const pts=data.slice(full?-300:-85);if(!pts.length)return;
-  const lo=Math.min(...pts),hi=Math.max(...pts),span=Math.max((hi-lo)*1.25,.08,hi*.003);
+  const level=Number.isFinite(averageLevel)&&averageLevel>0?averageLevel:null;
+  const values=level===null?pts:pts.concat([level]);
+  const lo=Math.min(...values),hi=Math.max(...values),span=Math.max((hi-lo)*1.25,.08,hi*.003);
   const ymin=(hi+lo)/2-span/2,ymax=(hi+lo)/2+span/2;
   const x=k=>left+k/(Math.max(1,pts.length-1))*(w-left-right);
   const y=v=>top+(ymax-v)/(ymax-ymin)*(h-top-bottom);
@@ -1006,24 +1224,36 @@ button{touch-action:manipulation}
   ctx.beginPath();pts.forEach((v,k)=>{if(k===0)ctx.moveTo(x(k),y(v));else ctx.lineTo(x(k),y(v));});
   ctx.lineWidth=full?3:2;ctx.strokeStyle=color;ctx.lineJoin='round';ctx.stroke();
   if(pts.length>1){ctx.lineTo(x(pts.length-1),h-bottom);ctx.lineTo(left,h-bottom);ctx.closePath();ctx.fillStyle='rgba(77,229,140,.09)';ctx.fill();}
+  if(full&&level!==null){
+    const avgY=y(level);
+    ctx.save();ctx.strokeStyle='#ffd16c';ctx.lineWidth=2;ctx.setLineDash([7,5]);
+    ctx.beginPath();ctx.moveTo(left,avgY);ctx.lineTo(w-right,avgY);ctx.stroke();ctx.restore();
+  }
   const last=pts[pts.length-1];ctx.fillStyle=color;ctx.beginPath();ctx.arc(x(pts.length-1),y(last),full?4:2.5,0,Math.PI*2);ctx.fill();
  }
  function drawLiveCharts(){if(screen!=='market')return;for(let i=0;i<5;i++){const el=$('liveCard'+i);if(!el||el.hidden)continue;const pts=chartQuotes[i]||[];priceGraph($('miniCanvas'+i),pts,pts.length<2||pts.at(-1)>=pts[0]?'#59e98f':'#ff8673');}}
  function openTrade(i){if(!marketStarted)return;clearTimeout(toastTimeout);$('toast').classList.remove('show');selectedTrade=i;showScreen('trade');updateTradeUI();drawTradeGraph();}
- function updateTradeUI(){if(selectedTrade<0)return;const i=selectedTrade,c=COMPANIES[i],pnl=positionPnL(i);
+ function updateTradeUI(){if(selectedTrade<0)return;
+  const i=selectedTrade,c=COMPANIES[i],pnl=openPositionPnL(i),whole=equity()-10000;
   $('tradeName').textContent='ПАО «'+c.name+'»';$('tradePrice').textContent=money2(state.prices[i]);$('tradeQty').textContent=state.qty[i]+' шт.';
-  $('tradeCash').textContent=money2(state.cash);$('tradePnL').textContent=(pnl>0?'+':'')+money2(pnl);$('tradePnL').className=pnl<0?'loss':'gain';
+  $('tradeCash').textContent=money2(state.cash);
+  $('tradePnL').textContent=(pnl>0?'+':'')+money2(pnl);$('tradePnL').className=pnl<0?'loss':'gain';
+  $('tradeEquity').textContent=money2(equity());
+  $('tradeOverallPnL').textContent=(whole>0?'+':'')+money2(whole);$('tradeOverallPnL').className=whole<0?'loss':'gain';
+  $('tradeAvgPrice').textContent=state.qty[i]>0?money2(avgCosts[i]):'—';
+  $('tradeRealized').textContent=(realizedPnL[i]>0?'+':'')+money2(realizedPnL[i]);
+  $('tradeRealized').className=realizedPnL[i]<0?'loss':'gain';
   $('tradeChartTitle').textContent='КОТИРОВКИ · '+c.name;$('tradeChange').textContent=pct((state.prices[i]/c.price-1)*100);
   $('tradeChange').className=state.prices[i]>=c.price?'gain':'loss';
   $('tradeBuy').disabled=affordable(i)<1;$('tradeSell').disabled=state.qty[i]<1;
  }
- function drawTradeGraph(){if(screen!=='trade'||selectedTrade<0)return;const pts=chartQuotes[selectedTrade]||[];priceGraph($('tradeCanvas'),pts,pts.length<2||pts.at(-1)>=pts[0]?'#61ee91':'#ff9274',true);}
+ function drawTradeGraph(){if(screen!=='trade'||selectedTrade<0)return;const pts=chartQuotes[selectedTrade]||[];const i=selectedTrade;priceGraph($('tradeCanvas'),pts,pts.length<2||pts.at(-1)>=pts[0]?'#61ee91':'#ff9274',true,state.qty[i]>0?avgCosts[i]:null);}
  function tradeOne(delta){if(selectedTrade<0)return;const i=selectedTrade;if(!transact(i,delta)){toast(delta>0?'Недостаточно денег':'Нет акций для продажи');return;}
   const btn=$(delta>0?'tradeBuy':'tradeSell');btn.classList.remove('trade-confirmed');void btn.offsetWidth;btn.classList.add('trade-confirmed');updateTradeUI();updateLiveUI();drawTradeGraph();}
  function closeTrade(){if(screen!=='trade')return;selectedTrade=-1;showScreen('market');updateLiveUI();}
  function endMarket(){liquidateAndFinish();}
  function liquidateAndFinish(){if(!marketStarted)return;elapsedMs=Math.max(elapsedMs,performance.now()-sessionStart);
-  for(let i=0;i<5;i++){if(state.qty[i]>0){realizedPnL[i]+=(state.prices[i]-avgCosts[i])*state.qty[i];state.cash+=state.qty[i]*state.prices[i];state.qty[i]=0;avgCosts[i]=0;}}
+  for(let i=0;i<5;i++){if(state.qty[i]>0)sellFifo(i,state.qty[i]);}
   clearInterval(marketInterval);marketInterval=null;marketStarted=false;clearTimeout(swanTimeout);hideSwan();swanPlan=null;showFinal(false);
  }
  function refreshEditor(){configureEditor(); $('editCash').textContent=money2(state.cash);$('editInvested').textContent=money2(invested());$('editEquity').textContent=money2(equity());$('editStars').textContent=state.stars+' ★';$('editorRows').innerHTML=COMPANIES.map((c,i)=>`<div class="editor-item"><div class="editor-symbol">${c.symbol}</div><div class="editor-name">${c.name}</div><div class="editor-price">${money2(state.prices[i])} / акция</div><div class="editor-total measure">${money2(state.qty[i]*state.prices[i])}</div><div class="qty-controls"><button class="qty-btn" data-change="-1" data-index="${i}" aria-label="Продать одну акцию ${c.name}" ${state.qty[i]===0?'disabled':''}>−</button><span class="qty-num">${state.qty[i]}</span><button class="qty-btn" data-change="1" data-index="${i}" aria-label="Купить одну акцию ${c.name}" ${affordable(i)===0?'disabled':''}>+</button></div></div>`).join('');$('editorRows').querySelectorAll('[data-change]').forEach(btn=>btn.addEventListener('click',()=>editOne(+btn.dataset.index,+btn.dataset.change)));$('nextCycle').disabled=shares()===0;}
@@ -1103,6 +1333,8 @@ button{touch-action:manipulation}
   window.addEventListener('resize',resizeGame,{passive:true});
   window.addEventListener('orientationchange',rotateFix,{passive:true});
   window.addEventListener('pageshow',rotateFix,{passive:true});
+  document.addEventListener('fullscreenchange',rotateFix);
+  document.addEventListener('webkitfullscreenchange',rotateFix);
   if(window.visualViewport){
     window.visualViewport.addEventListener('resize',resizeGame,{passive:true});
     window.visualViewport.addEventListener('scroll',resizeGame,{passive:true});
