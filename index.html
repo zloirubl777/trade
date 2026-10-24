@@ -610,6 +610,110 @@ body:has(#homeScreen.active){overflow:hidden}
 body:has(#homeScreen.active) .toast.show{background:rgba(20,55,48,.68);}
 .toast:focus-visible{outline:3px solid #fff0a9;outline-offset:2px;}
 
+
+/* Safari/iPhone editor fix — Yuniy_treyder original build.
+   Five self-contained horizontal rows; plus/minus never escape the row. */
+@media (orientation: portrait) and (max-width: 750px) {
+  #editorScreen.active .editor-screen {
+    display:grid;
+    grid-template-rows:auto auto minmax(0,1fr) auto;
+    gap:clamp(4px,1dvh,8px);
+    height:calc(100dvh - 18px);
+    min-height:0;
+    max-width:100%;
+    overflow:hidden;
+  }
+  #editorScreen.active .editor-heading{min-height:0;margin:0;}
+  #editorScreen.active .screen-title{font-size:clamp(20px,5.4vw,28px);line-height:1.12;}
+  #editorScreen.active .editor-description{font-size:clamp(9px,2.5vw,12px);line-height:1.15;margin:13px auto 0;}
+  #editorScreen.active .editor-summary{
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:5px;margin:0;min-height:0;
+  }
+  #editorScreen.active .editor-summary .stat-chip{min-width:0;padding:5px 8px;font-size:clamp(9px,2.5vw,11px);}
+  #editorScreen.active .editor-summary .stat-chip strong{font-size:clamp(12px,3.55vw,17px);line-height:1.08;}
+  #editorScreen.active .editor-table{
+    display:flex;flex-direction:column;min-height:0;min-width:0;
+    padding:clamp(6px,1.75vw,10px);margin:0;overflow:hidden;
+  }
+  #editorScreen.active .panel-title{font-size:clamp(16px,4.2vw,20px);margin:0 0 5px;flex:0 0 auto;}
+  #editorScreen.active .editor-rows{
+    flex:1 1 auto;min-height:0;min-width:0;
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+    grid-template-rows:repeat(5,minmax(0,1fr));
+    align-items:stretch;
+    gap:clamp(3px,.85dvh,6px);
+    margin:0;
+  }
+  #editorScreen.active .editor-item,
+  #editorScreen.active .editor-item:last-child{
+    grid-column:auto;
+    display:grid;
+    grid-template-columns:26px minmax(0,1fr) 96px;
+    grid-template-rows:repeat(3,minmax(0,1fr));
+    grid-template-areas:
+      "ico name controls"
+      "ico price controls"
+      "ico total controls";
+    align-items:center;
+    column-gap:clamp(4px,1.7vw,9px);
+    row-gap:0;
+    min-width:0;min-height:0;
+    overflow:hidden;
+    padding:3px clamp(5px,1.9vw,10px);
+    border-radius:10px;
+    text-align:left;
+  }
+  #editorScreen.active .editor-symbol{grid-area:ico;align-self:center;height:auto;line-height:1;font-size:clamp(18px,5vw,24px);}
+  #editorScreen.active .editor-name{
+    grid-area:name;min-width:0;min-height:0;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+    font-size:clamp(10px,3vw,13px);line-height:1.15;
+  }
+  #editorScreen.active .editor-price{
+    grid-area:price;min-width:0;margin:0;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+    font-size:clamp(9px,2.6vw,11px);line-height:1.1;
+  }
+  #editorScreen.active .editor-total{
+    grid-area:total;min-width:0;margin:0;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+    font-size:clamp(10px,2.9vw,13px);line-height:1.15;
+  }
+  #editorScreen.active .qty-controls{
+    grid-area:controls;justify-self:end;
+    display:flex;justify-content:space-between;align-items:center;
+    gap:3px;min-width:0;width:96px;max-width:100%;
+  }
+  #editorScreen.active .qty-btn{
+    flex:0 0 31px;width:31px;height:31px;min-width:0;min-height:0;
+    font-size:19px;line-height:1;padding:0;
+    border-radius:8px;touch-action:manipulation;
+  }
+  #editorScreen.active .qty-controls .qty-num{
+    flex:1 1 auto;min-width:0;font-size:12px;line-height:1;text-align:center;
+  }
+  #editorScreen.active .editor-actions{
+    display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:5px;margin:0;min-width:0;min-height:0;
+  }
+  #editorScreen.active .editor-actions .btn{
+    min-width:0;width:100%;padding:clamp(6px,1.1dvh,10px) 3px;
+    font-size:clamp(9px,2.7vw,12px);line-height:1.13;
+    overflow-wrap:anywhere;
+  }
+}
+@media (orientation: portrait) and (max-width: 350px) {
+  #editorScreen.active .editor-item,
+  #editorScreen.active .editor-item:last-child{grid-template-columns:22px minmax(0,1fr) 84px;column-gap:4px;padding:2px 5px;}
+  #editorScreen.active .qty-controls{width:84px;gap:2px;}
+  #editorScreen.active .qty-btn{flex-basis:27px;width:27px;height:27px;font-size:17px;}
+  #editorScreen.active .editor-name{font-size:10px;}
+  #editorScreen.active .editor-price{font-size:9px;}
+  #editorScreen.active .editor-total{font-size:10px;}
+}
+
 </style>
 </head>
 <body>
